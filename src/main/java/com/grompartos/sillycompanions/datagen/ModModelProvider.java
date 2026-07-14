@@ -1,7 +1,7 @@
 package com.grompartos.sillycompanions.datagen;
 
 import com.grompartos.sillycompanions.SillyCompanions;
-import com.grompartos.sillycompanions.item.ModItems;
+import com.grompartos.sillycompanions.item.MyModItems;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
@@ -16,6 +16,6 @@ public class ModModelProvider extends ModelProvider {
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
 
-        itemModels.generateFlatItem(ModItems.SUMMONING_BOOK.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(MyModItems.SUMMONING_BOOK.get(), ModelTemplates.FLAT_ITEM);
     }
 }

@@ -1,9 +1,9 @@
 package com.grompartos.sillycompanions;
 
-import com.grompartos.sillycompanions.entity.custom.MyModEntities;
-import com.grompartos.sillycompanions.entity.custom.Companion;
+import com.grompartos.sillycompanions.entity.server.CompanionRegisterer;
 import com.grompartos.sillycompanions.item.MyModItems;
-import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import org.slf4j.Logger;
 
@@ -28,10 +28,11 @@ public class SillyCompanions {
 
     public SillyCompanions(IEventBus modEventBus, ModContainer modContainer) {
         MyModItems.register(modEventBus);
-        MyModEntities.ENTITY_TYPES.register(modEventBus);
         NeoForge.EVENT_BUS.register(this);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         modEventBus.addListener(this::addCreative);
+        CompanionRegisterer.ENTITY_TYPES.register(modEventBus);
+        modEventBus.addListener(this::createDefaultAttributes);
     }
     private void addCreative(BuildCreativeModeTabContentsEvent event){
         if(event.getTabKey() == CreativeModeTabs.SPAWN_EGGS){
@@ -42,14 +43,23 @@ public class SillyCompanions {
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("HELLO from server starting");
     }
-
-    @EventBusSubscriber(modid = "sillycompanions")
-    public class ModEvents {
-
-        @SubscribeEvent
-        public static void registerAttributes(EntityAttributeCreationEvent event) {
-            // Associate the attributes builder from your Companion class with your Entity Type definition
-            event.put(MyModEntities.MY_ENTITY.get(), Companion.createAttributes().build());
-        }
+    public void createDefaultAttributes(EntityAttributeCreationEvent event) {
+        event.put(
+                // Your entity type.
+                CompanionRegisterer.COMPANION.get(),
+                // An AttributeSupplier. This is typically created by calling LivingEntity#createLivingAttributes,
+                // setting your values on it, and calling #build. You can also create the AttributeSupplier from scratch
+                // if you want, see the source of LivingEntity#createLivingAttributes for an example.
+                LivingEntity.createLivingAttributes()
+                        // Add an attribute with a non-default value.
+                        .add(Attributes.MAX_HEALTH, 50d)
+                        .add(Attributes.MOVEMENT_SPEED, 0.15d)
+                        .add(Attributes.FOLLOW_RANGE,32d)
+                        // Build the AttributeSupplier.
+                        .build()
+        );
     }
-}
+    }
+
+
+

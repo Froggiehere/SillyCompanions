@@ -1,7 +1,8 @@
 package com.grompartos.sillycompanions;
 
-import com.grompartos.sillycompanions.entity.client.CompanionRenderer;
-import com.grompartos.sillycompanions.entity.custom.MyModEntities;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.grompartos.sillycompanions.entity.server.Companion;
+import com.grompartos.sillycompanions.entity.server.CompanionRegisterer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -23,8 +24,9 @@ public class SillyCompanionsClient {
     static void onClientSetup(FMLClientSetupEvent event) {
         SillyCompanions.LOGGER.info("HELLO FROM CLIENT SETUP");
     }
-    @SubscribeEvent // on the mod event bus only on the physical client
+    @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(MyModEntities.MY_ENTITY.get(), CompanionRenderer::new);
+        event.registerEntityRenderer(CompanionRegisterer.COMPANION.get(),
+                context -> new GeoEntityRenderer<>(context, CompanionRegisterer.COMPANION.get()));
     }
 }
